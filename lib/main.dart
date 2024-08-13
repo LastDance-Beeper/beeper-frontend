@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         '/helper_login': (context) => HelperLoginPage(),
         '/helper_signup': (context) => HelperSignupPage(),
         '/tag_edit': (context) => TagEditPage(),
-        '/help_request_detail': (context) => HelpRequestDetailPage(requestId: ''),
+        '/help_request_detail': (context) => HelpRequestDetailPage(requestId: '', title: '', description: '',),
       },
     );
   }

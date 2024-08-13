@@ -4,8 +4,14 @@ import 'video_call_page.dart';
 
 class HelpRequestDetailPage extends StatefulWidget {
   final String requestId;
+  final String title;
+  final String description;
 
-  HelpRequestDetailPage({required this.requestId});
+  HelpRequestDetailPage({
+    required this.requestId,
+    required this.title,
+    required this.description,
+  });
 
   @override
   _HelpRequestDetailPageState createState() => _HelpRequestDetailPageState();
@@ -29,9 +35,9 @@ class _HelpRequestDetailPageState extends State<HelpRequestDetailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('요청 제목', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(widget.title, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 SizedBox(height: 10),
-                Text('요청 설명...'),
+                Text(widget.description),
                 SizedBox(height: 20),
                 ElevatedButton(
                   child: Text('전화 연결'),
@@ -87,7 +93,7 @@ class _HelpRequestDetailPageState extends State<HelpRequestDetailPage> {
           context,
           MaterialPageRoute(
             builder: (context) => VideoCallPage(
-              roomId: widget.requestId, // roomId로 requestId를 사용
+              roomId: widget.requestId, requestTitle: '버스 무인발권기 사용', requestDescription: '인천공항에 가야하나, 밤이라 유인 발권 창구가 운영하지 않고 있어 어려움을 겪으시고 있습니다.', // roomId로 requestId를 사용
             ),
           ),
         );

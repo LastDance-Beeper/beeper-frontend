@@ -1,16 +1,17 @@
-import 'package:beeper/pages/activity_history_page.dart';
 import 'package:beeper/pages/tag_edit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:beeper/services/real_time_notification_service.dart';
 import 'package:beeper/services/help_request_service.dart';
-import 'package:beeper/pages/video_call_page.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 
 import '../services/auth_service.dart';
+import 'activity_history_page.dart';
 import 'student_help_list_page.dart';
 import 'student_profile_page.dart';
+import 'video_call_page.dart';
+import 'help_request_detail_page.dart';
 
 class StudentDashboardPage extends StatefulWidget {
   @override
@@ -23,7 +24,35 @@ class _StudentDashboardPageState extends State<StudentDashboardPage> {
   List<String> _notificationTags = ['청소', '말동무', '산책'];
   final RealTimeNotificationService _notificationService = RealTimeNotificationService();
   final HelpRequestService _helpRequestService = HelpRequestService();
-  List<Map<String, dynamic>> _helpRequests = [];
+  // List<Map<String, dynamic>> _helpRequests = [];
+  List<Map<String, dynamic>> _helpRequests = [
+    {
+      'roomId': '1a2b3c4d',
+      'title': '장보기 도움 필요',
+      'description': '키오스크 사용 도움이 필요합니다.',
+    },
+    {
+      'roomId': '2b3c4d5e',
+      'title': '컴퓨터 사용 도움',
+      'description': '이메일 보내는 방법을 알고 싶어 하십니다.',
+    },
+    {
+      'roomId': '3c4d5e6f',
+      'title': '병원 동행 요청',
+      'description': '병원에 함께 가주실 분이 필요합니다.',
+    },
+    {
+      'roomId': '4d5e6f7g',
+      'title': '말동무 요청',
+      'description': '대화를 나누고 싶어 하십니다.',
+    },
+    {
+      'roomId': '5e6f7g8h',
+      'title': '산책 도움 필요',
+      'description': '공원에서 산책을 함께 해주실 분이 필요합니다.',
+    },
+  ];
+
   late Timer _refreshTimer;
 
   @override
@@ -53,10 +82,16 @@ class _StudentDashboardPageState extends State<StudentDashboardPage> {
     }
   }
 
-  void _acceptHelpRequest(String roomId) {
+  void _viewHelpRequestDetail(String roomId, String title, String description) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => VideoCallPage(roomId: roomId)),
+      MaterialPageRoute(
+        builder: (context) => HelpRequestDetailPage(
+          requestId: roomId,
+          title: title,
+          description: description,
+        ),
+      ),
     );
   }
 
@@ -208,7 +243,11 @@ class _StudentDashboardPageState extends State<StudentDashboardPage> {
                 trailing: ElevatedButton(
                   child: Text('배정'),
                   onPressed: () {
-                    _acceptHelpRequest(request['roomId']);
+                    _viewHelpRequestDetail(
+                      request['roomId'],
+                      request['title'],
+                      request['description'],
+                    ); // roomId, title, description을 넘겨서 상세 페이지로 이동
                   },
                 ),
               )),
@@ -217,6 +256,7 @@ class _StudentDashboardPageState extends State<StudentDashboardPage> {
       ),
     );
   }
+
 
   void _showMenu(BuildContext context) {
     showModalBottomSheet(
@@ -279,5 +319,4 @@ class _StudentDashboardPageState extends State<StudentDashboardPage> {
       },
     );
   }
-
 }

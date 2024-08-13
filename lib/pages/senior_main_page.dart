@@ -1,19 +1,24 @@
+import 'package:beeper/pages/video_call_page.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:beeper/services/help_request_service.dart';
+import 'dart:async';
+
+import 'senior_video_call_page.dart';
 
 class SeniorMainPage extends StatefulWidget {
   @override
   _SeniorMainPageState createState() => _SeniorMainPageState();
 }
 
-class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProviderStateMixin {
+class _SeniorMainPageState extends State<SeniorMainPage>
+    with SingleTickerProviderStateMixin {
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool _isListening = false;
   String _text = '마이크 버튼을 눌러 말씀해주세요.';
   String _processedText = '';
   bool _showConfirmation = false;
+  bool _isButtonDisabled = true;
   late AnimationController _animationController;
   List<double> _waveHeights = List.filled(5, 20);
 
@@ -80,37 +85,29 @@ class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProvid
   }
 
   void _processText() async {
-    setState(() => _text = '요청을 처리 중입니다...');
-    try {
-      final processedText = _text;  // 음성 텍스트 그대로 사용 (여기서 AI 요약 기능이 있을 수 있음)
-      setState(() {
-        _processedText = processedText;
-        _showConfirmation = true;
-      });
-    } catch (error) {
-      print(error);
-      setState(() => _text = '오류가 발생했습니다. 다시 시도해주세요.');
-    }
+    setState(() {
+      _text = '요청을 분석 중입니다...';
+      _isButtonDisabled = true;
+    });
+
+    await Future.delayed(Duration(seconds: 2)); // 분석 시간 시뮬레이션
+
+    setState(() {
+      _processedText = "버스표 무인발권기의 사용에 도움이 필요합니다";
+      _showConfirmation = true;
+      _text = '요약이 완료되었습니다';
+      _isButtonDisabled = false;
+    });
   }
 
   void _sendHelpRequest() async {
-    try {
-      final helpRequestService = HelpRequestService();
-      final uuid = await helpRequestService.createHelpRequest(_processedText);  // UUID 생성 및 전송
+    // 실제 구현에서는 서버로부터 requestId를 받아와야 합니다.
+    // 여기서는 임시로 고정된 값을 사용합니다.
+    String requestId = 'dummy-request-id-12345';
 
-      if (uuid.isNotEmpty) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => WaitingScreen(roomId: uuid), // WaitingScreen으로 UUID를 전달
-        ));
-      } else {
-        throw Exception('도움 요청 전송에 실패했습니다.');
-      }
-    } catch (error) {
-      print(error);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('도움 요청 전송에 실패했습니다. 다시 시도해주세요.')),
-      );
-    }
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => WaitingScreen(requestId: requestId),
+    ));
   }
 
   @override
@@ -199,7 +196,7 @@ class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProvid
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: _sendHelpRequest,
+                      onPressed: _isButtonDisabled ? null : _sendHelpRequest,
                       child: Text('도움 요청하기'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
@@ -217,10 +214,32 @@ class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProvid
   }
 }
 
-class WaitingScreen extends StatelessWidget {
-  final String roomId;
+class WaitingScreen extends StatefulWidget {
+  final String requestId; // requestId 추가
 
-  WaitingScreen({required this.roomId});
+  WaitingScreen({required this.requestId}); // 생성자 수정
+
+  @override
+  _WaitingScreenState createState() => _WaitingScreenState();
+}
+
+class _WaitingScreenState extends State<WaitingScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _simulateWaiting();
+  }
+
+  void _simulateWaiting() {
+    Future.delayed(Duration(seconds: 5), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SeniorVideoCallPage(roomId: widget.requestId),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -233,20 +252,23 @@ class WaitingScreen extends StatelessWidget {
               CircularProgressIndicator(),
               SizedBox(height: 20),
               Text(
-                '도움 요청이 전송되었습니다',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                '도우미를 찾고 있습니다...',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
               Text(
-                '대학생 봉사자를 찾고 있습니다...',
-                style: TextStyle(fontSize: 16),
+                '도우미가 배정되면 화상통화에 연결됩니다',
+                style: TextStyle(fontSize: 20),
               ),
               SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('요청 취소'),
+                child: Text(
+                  '요청 취소',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
@@ -255,6 +277,18 @@ class WaitingScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DummyVideoCallScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('화상 통화')),
+      body: Center(
+        child: Text('화상 통화 연결됨 (더미 화면)', style: TextStyle(fontSize: 24)),
       ),
     );
   }

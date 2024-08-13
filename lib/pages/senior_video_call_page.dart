@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class VideoCallPage extends StatefulWidget {
-  final String requestTitle;
-  final String requestDescription;
-
-  VideoCallPage({required this.requestTitle, required this.requestDescription, required String roomId});
+class SeniorVideoCallPage extends StatefulWidget {
+  SeniorVideoCallPage({required String roomId});
 
   @override
-  _VideoCallPageState createState() => _VideoCallPageState();
+  _SeniorVideoCallPageState createState() => _SeniorVideoCallPageState();
 }
 
-class _VideoCallPageState extends State<VideoCallPage> {
+class _SeniorVideoCallPageState extends State<SeniorVideoCallPage> {
   late Timer _timer;
   int _secondsElapsed = 0;
-  final TextEditingController _nameController = TextEditingController();
   bool _isMuted = false;
-  bool _isVideoOn = true;
+  bool _isFrontCamera = true;
 
   @override
   void initState() {
@@ -27,7 +23,6 @@ class _VideoCallPageState extends State<VideoCallPage> {
   @override
   void dispose() {
     _timer.cancel();
-    _nameController.dispose();
     super.dispose();
   }
 
@@ -53,13 +48,13 @@ class _VideoCallPageState extends State<VideoCallPage> {
         child: Column(
           children: [
             Expanded(
-              flex: 5,  // 화상 통화 영역 확장
+              flex: 5,
               child: Stack(
                 children: [
                   Container(
                     color: Colors.grey[300],
                     child: Center(
-                      child: Text('상대방 화면', style: TextStyle(fontSize: 24)),
+                      child: Text('도우미 화면', style: TextStyle(fontSize: 24)),
                     ),
                   ),
                   Positioned(
@@ -87,26 +82,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
                 children: [
                   Text(
                     '통화 시간: ${_formatDuration(_secondsElapsed)}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    '도움 요청: ${widget.requestTitle}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    widget.requestDescription,
-                    style: TextStyle(fontSize: 14),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: '성함 입력',
-                      border: OutlineInputBorder(),
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -115,52 +91,67 @@ class _VideoCallPageState extends State<VideoCallPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildCircularIconButton(
+                _buildButtonWithText(
                   icon: _isMuted ? Icons.mic_off : Icons.mic,
                   color: _isMuted ? Colors.red : Colors.blue,
+                  text: _isMuted ? '마이크 켜기' : '마이크 끄기',
                   onPressed: () {
                     setState(() {
                       _isMuted = !_isMuted;
                     });
                   },
                 ),
-                _buildCircularIconButton(
-                  icon: _isVideoOn ? Icons.videocam : Icons.videocam_off,
-                  color: _isVideoOn ? Colors.blue : Colors.red,
+                _buildButtonWithText(
+                  icon: _isFrontCamera ? Icons.camera_front : Icons.camera_rear,
+                  color: Colors.blue,
+                  text: _isFrontCamera ? '후면 카메라' : '전면 카메라',
                   onPressed: () {
                     setState(() {
-                      _isVideoOn = !_isVideoOn;
+                      _isFrontCamera = !_isFrontCamera;
                     });
                   },
                 ),
-                _buildCircularIconButton(
+                _buildButtonWithText(
                   icon: Icons.call_end,
                   color: Colors.red,
+                  text: '통화 종료',
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCircularIconButton({
+  Widget _buildButtonWithText({
     required IconData icon,
     required Color color,
+    required String text,
     required VoidCallback onPressed,
   }) {
-    return ElevatedButton(
-      child: Icon(icon, color: Colors.white),
-      style: ElevatedButton.styleFrom(
-        shape: CircleBorder(), backgroundColor: color,
-        padding: EdgeInsets.all(20),
-      ),
-      onPressed: onPressed,
+    return Column(
+      children: [
+        ElevatedButton(
+          child: Icon(icon, color: Colors.white, size: 36),
+          style: ElevatedButton.styleFrom(
+            shape: CircleBorder(),
+            backgroundColor: color,
+            padding: EdgeInsets.all(24),
+          ),
+          onPressed: onPressed,
+        ),
+        SizedBox(height: 8),
+        Text(
+          text,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

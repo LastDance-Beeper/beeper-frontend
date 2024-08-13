@@ -27,7 +27,8 @@ class LoginSelectionPage extends StatelessWidget {
         elevation: 0, // 그림자 효과를 제거합니다.
       ),
       body: SafeArea(
-        child: Center( // Center 위젯으로 전체 화면을 중앙에 정렬
+        child: Center(
+          // Center 위젯으로 전체 화면을 중앙에 정렬
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Column(
@@ -49,7 +50,6 @@ class LoginSelectionPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // 어르신 로그인 페이지로 이동하는 로직을 여기에 추가하세요.
-
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFF8E1C7), // 버튼 배경색
@@ -61,17 +61,15 @@ class LoginSelectionPage extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          'images/login_selection_senior.png', // 어르신 아이콘 이미지
-                          height: 100,
-                        ),
+                        Image.asset('assets/images/login_selection_senior.png',
+                            height: 100),
                         SizedBox(height: 10),
                         Text(
                           '도움이 필요해요\n(어르신 로그인)',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -98,7 +96,7 @@ class LoginSelectionPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
-                          'images/login_selection_responder.png', // 도우미 아이콘 이미지
+                          'assets/images/login_selection_responder.png', // 도우미 아이콘 이미지
                           height: 100,
                         ),
                         SizedBox(height: 10),

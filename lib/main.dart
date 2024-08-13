@@ -1,56 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:beeper/services/auth_service.dart';
+import 'package:beeper/pages/user_selection_page.dart';
+import 'package:beeper/pages/senior_main_page.dart';
+import 'package:beeper/pages/student_dashboard_page.dart';
+import 'package:beeper/pages/video_call_page.dart';
 
 void main() {
-  runApp(BeeperApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthService()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
-class BeeperApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Beeper',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: BeeperHomePage(),
-    );
-  }
-}
-
-class BeeperHomePage extends StatefulWidget {
-  @override
-  _BeeperHomePageState createState() => _BeeperHomePageState();
-}
-
-class _BeeperHomePageState extends State<BeeperHomePage> {
-  String _message = "Welcome to Beeper!";
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Beeper'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              _message,
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _message = "Button Pressed!";
-                });
-              },
-              child: Text('Press Me'),
-            ),
-          ],
-        ),
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => UserSelectionPage(),
+        '/senior_main': (context) => SeniorMainPage(),
+        '/student_dashboard': (context) => StudentDashboardPage(),
+        '/video_call': (context) => VideoCallPage(),
+      },
     );
   }
 }

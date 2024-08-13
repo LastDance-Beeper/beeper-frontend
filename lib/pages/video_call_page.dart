@@ -26,7 +26,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
     super.initState();
     _initRenderers();
     _requestPermissions();
-    _joinRoom(widget.roomId);  // 전달받은 roomId를 사용하여 방에 참여
+    _joinRoom(widget.roomId);
   }
 
   Future<void> _requestPermissions() async {
@@ -57,79 +57,13 @@ class _VideoCallPageState extends State<VideoCallPage> {
     }
   }
 
-  void _joinRoom(String roomId) {
+  void _joinRoom(String roomId) async {
     try {
       _channel = WebSocketChannel.connect(Uri.parse('ws://34.22.110.59:5500/signal'));
 
-      _channel!.stream.listen((message) async {
-        var data = json.decode(message);
-        if (data['roomId'] != roomId) return;
-
-        if (data['type'] == 'offer') {
-          try {
-            await _peerConnection!.setRemoteDescription(
-                RTCSessionDescription(data['data']['sdp'], data['data']['type']));
-            var answer = await _peerConnection!.createAnswer();
-            await _peerConnection!.setLocalDescription(answer);
-            _channel!.sink.add(json.encode({
-              'type': 'answer',
-              'data': answer.toMap(),
-              'roomId': roomId
-            }));
-            print('SDP Answer created and sent');
-          } catch (e) {
-            print('Error handling offer: $e');
-          }
-        } else if (data['type'] == 'answer') {
-          try {
-            await _peerConnection!.setRemoteDescription(
-                RTCSessionDescription(data['data']['sdp'], data['data']['type']));
-            print('SDP Answer set as remote description');
-          } catch (e) {
-            print('Error handling answer: $e');
-          }
-        } else if (data['type'] == 'candidate') {
-          try {
-            _peerConnection!.addCandidate(RTCIceCandidate(
-                data['data']['candidate'],
-                data['data']['sdpMid'],
-                data['data']['sdpMLineIndex']
-            ));
-            print('ICE Candidate added');
-          } catch (e) {
-            print('Error adding ICE candidate: $e');
-          }
-        }
-      }, onDone: () {
-        print('WebSocket closed');
-        setState(() {
-          isConnected = false;
-        });
-      }, onError: (error) {
-        print('WebSocket error: $error');
-        setState(() {
-          isConnected = false;
-        });
-      });
-
-      setState(() {
-        print('WebSocket connected to room $roomId');
-        isConnected = true;
-      });
-
-    } catch (error) {
-      print('Failed to connect to WebSocket: $error');
-      setState(() {
-        isConnected = false;
-      });
-    }
-  }
-
-  Future<void> _createPeerConnection() async {
-    try {
       _peerConnection = await createPeerConnection({
         'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}],
-        'sdpSemantics': 'unified-plan', // Unified Plan으로 설정
+        'sdpSemantics': 'unified-plan',
       });
 
       _peerConnection!.onIceCandidate = (candidate) {
@@ -137,7 +71,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
           _channel!.sink.add(json.encode({
             'type': 'candidate',
             'data': candidate.toMap(),
-            'roomId': widget.roomId
+            'roomId': roomId,
           }));
           print('ICE Candidate sent');
         }
@@ -152,15 +86,56 @@ class _VideoCallPageState extends State<VideoCallPage> {
         }
       };
 
-      // Local MediaStream을 PeerConnection에 추가
       if (_localStream != null) {
         for (var track in _localStream!.getTracks()) {
           _peerConnection!.addTrack(track, _localStream!);
         }
         print('Local stream tracks added to peer connection');
       }
-    } catch (e) {
-      print('Error creating peer connection: $e');
+
+      _channel!.stream.listen((message) async {
+        var data = json.decode(message);
+        if (data['roomId'] != roomId) return;
+
+        if (data['type'] == 'offer') {
+          await _peerConnection!.setRemoteDescription(RTCSessionDescription(data['data']['sdp'], data['data']['type']));
+          var answer = await _peerConnection!.createAnswer();
+          await _peerConnection!.setLocalDescription(answer);
+          _channel!.sink.add(json.encode({
+            'type': 'answer',
+            'data': answer.toMap(),
+            'roomId': roomId,
+          }));
+          print('SDP Answer created and sent');
+        } else if (data['type'] == 'answer') {
+          await _peerConnection!.setRemoteDescription(RTCSessionDescription(data['data']['sdp'], data['data']['type']));
+          print('SDP Answer set as remote description');
+        } else if (data['type'] == 'candidate') {
+          _peerConnection!.addCandidate(RTCIceCandidate(
+              data['data']['candidate'], data['data']['sdpMid'], data['data']['sdpMLineIndex']));
+          print('ICE Candidate added');
+        }
+      }, onDone: () {
+        print('WebSocket closed');
+        setState(() {
+          isConnected = false;
+        });
+      }, onError: (error) {
+        print('WebSocket error: $error');
+        setState(() {
+          isConnected = false;
+        });
+      });
+
+      setState(() {
+        isConnected = true;
+        print('WebSocket connected to room $roomId');
+      });
+    } catch (error) {
+      print('Failed to connect to WebSocket: $error');
+      setState(() {
+        isConnected = false;
+      });
     }
   }
 

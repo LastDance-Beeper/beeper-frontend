@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "10539096579",
+    "project_id": "beeper-25ff3",
+    "storage_bucket": "beeper-25ff3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10539096579:android:00e83fe6ffecf28ac54c36",
+        "android_client_info": {
+          "package_name": "com.lastdance.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsQ1AbgdnvhujxqykXd3h1VwEG6tRGs3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10539096579:android:c29f70a9ed35c26bc54c36",
+        "android_client_info": {
+          "package_name": "com.lastdance.beeper"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsQ1AbgdnvhujxqykXd3h1VwEG6tRGs3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

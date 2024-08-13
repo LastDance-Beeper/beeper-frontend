@@ -27,11 +27,12 @@ class RealTimeNotificationService {
     // 로컬 알림 설정
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
-    final IOSInitializationSettings initializationSettingsIOS =
-    IOSInitializationSettings();
+    final DarwinInitializationSettings initializationSettingsDarwin =
+    DarwinInitializationSettings();
     final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
+      iOS: initializationSettingsDarwin,
+      macOS: initializationSettingsDarwin,
     );
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }

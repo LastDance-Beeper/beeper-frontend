@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:provider/provider.dart';
-import 'package:beeper/services/auth_service.dart';
-
-import 'mock_service.dart';
+import 'package:beeper/services/help_request_service.dart';
 
 class SeniorMainPage extends StatefulWidget {
   @override
@@ -13,7 +10,6 @@ class SeniorMainPage extends StatefulWidget {
 
 class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProviderStateMixin {
   final stt.SpeechToText _speech = stt.SpeechToText();
-  final MockService _mockService = MockService();
   bool _isListening = false;
   String _text = '마이크 버튼을 눌러 말씀해주세요.';
   String _processedText = '';
@@ -86,7 +82,7 @@ class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProvid
   void _processText() async {
     setState(() => _text = '요청을 처리 중입니다...');
     try {
-      final processedText = await _mockService.processVoiceRequest(_text);
+      final processedText = _text;  // 음성 텍스트 그대로 사용 (여기서 AI 요약 기능이 있을 수 있음)
       setState(() {
         _processedText = processedText;
         _showConfirmation = true;
@@ -94,6 +90,26 @@ class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProvid
     } catch (error) {
       print(error);
       setState(() => _text = '오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  }
+
+  void _sendHelpRequest() async {
+    try {
+      final helpRequestService = HelpRequestService();
+      final uuid = await helpRequestService.createHelpRequest(_processedText);  // UUID 생성 및 전송
+
+      if (uuid.isNotEmpty) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => WaitingScreen(roomId: uuid), // WaitingScreen으로 UUID를 전달
+        ));
+      } else {
+        throw Exception('도움 요청 전송에 실패했습니다.');
+      }
+    } catch (error) {
+      print(error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('도움 요청 전송에 실패했습니다. 다시 시도해주세요.')),
+      );
     }
   }
 
@@ -199,31 +215,12 @@ class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProvid
       ),
     );
   }
-
-  void _sendHelpRequest() async {
-    try {
-      final uuid = await _mockService.sendHelpRequest(_processedText);
-      if (uuid != null) {
-        // 서버에서 받은 UUID를 전달하면서 대기 화면으로 이동
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => WaitingScreen(roomId: "uuid"),
-        ));
-      } else {
-        throw Exception('도움 요청 전송에 실패했습니다.');
-      }
-    } catch (error) {
-      print(error);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('도움 요청 전송에 실패했습니다. 다시 시도해주세요.')),
-      );
-    }
-  }
 }
 
 class WaitingScreen extends StatelessWidget {
-  final String roomId; // roomId 매개변수 추가
+  final String roomId;
 
-  WaitingScreen({required this.roomId}); // 생성자에 roomId 추가
+  WaitingScreen({required this.roomId});
 
   @override
   Widget build(BuildContext context) {

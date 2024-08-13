@@ -4,19 +4,19 @@ import 'package:beeper/services/auth_service.dart';
 import 'package:beeper/pages/user_selection_page.dart';
 import 'package:beeper/pages/senior_main_page.dart';
 import 'package:beeper/pages/student_dashboard_page.dart';
-import 'package:beeper/pages/video_call_page.dart';
 import 'package:beeper/pages/helper_login_page.dart';
 import 'package:beeper/pages/helper_signup_page.dart';
 import 'package:beeper/pages/tag_edit_page.dart';
-import 'package:firebase_core/firebase_core.dart'; // Firebase Core 패키지 임포트
-import 'firebase_options.dart'; // firebase_options.dart 파일 임포트
-
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'pages/help_request_detail_page.dart';
 
+
+
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Flutter 프레임워크가 초기화되도록 보장
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // Firebase 초기화
+    options: DefaultFirebaseOptions.currentPlatform,
   );
 
   runApp(

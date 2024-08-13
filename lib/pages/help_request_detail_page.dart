@@ -87,7 +87,7 @@ class _HelpRequestDetailPageState extends State<HelpRequestDetailPage> {
           context,
           MaterialPageRoute(
             builder: (context) => VideoCallPage(
-              roomId: 'testUUID', // 실제 요청 설명으로 변경
+              roomId: widget.requestId, // roomId로 requestId를 사용
             ),
           ),
         );

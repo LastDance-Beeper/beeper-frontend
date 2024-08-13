@@ -5,6 +5,8 @@ import 'package:beeper/pages/user_selection_page.dart';
 import 'package:beeper/pages/senior_main_page.dart';
 import 'package:beeper/pages/student_dashboard_page.dart';
 import 'package:beeper/pages/video_call_page.dart';
+import 'package:beeper/pages/helper_login_page.dart';
+import 'package:beeper/pages/helper_signup_page.dart';
 
 void main() {
   runApp(
@@ -32,6 +34,8 @@ class MyApp extends StatelessWidget {
         '/senior_main': (context) => SeniorMainPage(),
         '/student_dashboard': (context) => StudentDashboardPage(),
         '/video_call': (context) => VideoCallPage(),
+        '/helper_login': (context) => HelperLoginPage(),
+        '/helper_signup': (context) => HelperSignupPage(),
       },
     );
   }

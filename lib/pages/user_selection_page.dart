@@ -1,44 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:beeper/services/auth_service.dart';
 
 class UserSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              SizedBox(height: 40),
               Text(
-                'Beeper',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                '환영합니다!',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 50),
-              ElevatedButton(
-                child: Text('어르신'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/senior_main');
-                },
+              Text(
+                '가입 이유를 선택해주세요',
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(height: 40),
+              _buildSelectionCard(
+                context,
+                '도움이 필요해요\n(어르신 로그인)',
+                'images/login_selection_senior.png',
+                '/senior_main',
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                child: Text('대학생'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/student_dashboard');
-                },
+              _buildSelectionCard(
+                context,
+                '도움을 줄 수 있어요\n(도우미 로그인)',
+                'images/login_selection_responder.png',
+                '/helper_login',
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectionCard(BuildContext context, String title, String imagePath, String route) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, route),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Color(0xFFFFF9C4),  // 밝은 노란색
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Image.asset(imagePath, width: 100, height: 100),
+            SizedBox(height: 10),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );

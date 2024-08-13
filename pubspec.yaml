@@ -16,7 +16,7 @@ dependencies:
   http: ^0.13.3
   shared_preferences: ^2.0.7
   speech_to_text: ^6.1.1  # 버전을 6.1.1로 업데이트
-  flutter_webrtc: ^0.9.0
+  flutter_webrtc: ^0.11.6
   permission_handler: ^10.0.0
 
 dev_dependencies:

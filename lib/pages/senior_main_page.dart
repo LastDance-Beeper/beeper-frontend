@@ -202,10 +202,11 @@ class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProvid
 
   void _sendHelpRequest() async {
     try {
-      final success = await _mockService.sendHelpRequest(_processedText);
-      if (success) {
+      final uuid = await _mockService.sendHelpRequest(_processedText);
+      if (uuid != null) {
+        // 서버에서 받은 UUID를 전달하면서 대기 화면으로 이동
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => WaitingScreen(),
+          builder: (context) => WaitingScreen(roomId: "uuid"),
         ));
       } else {
         throw Exception('도움 요청 전송에 실패했습니다.');
@@ -217,11 +218,13 @@ class _SeniorMainPageState extends State<SeniorMainPage> with SingleTickerProvid
       );
     }
   }
-
-// ... (나머지 코드는 그대로 유지)
 }
 
 class WaitingScreen extends StatelessWidget {
+  final String roomId; // roomId 매개변수 추가
+
+  WaitingScreen({required this.roomId}); // 생성자에 roomId 추가
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

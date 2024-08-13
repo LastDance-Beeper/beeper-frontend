@@ -15,7 +15,7 @@ class MockService {
   // 모의 음성 처리
   Future<String> processVoiceRequest(String text) async {
     await Future.delayed(Duration(seconds: 2)); // API 호출 지연 시뮬레이션
-    return "당신의 요청 '$text'를 처리했습니다. 도움이 필요하신 것 같습니다.";
+    return "키오스크 사용 도움 요청이 필요하신 것 같습니다.";
   }
 
   // 모의 도움 요청 전송
@@ -30,13 +30,33 @@ class MockService {
     return {
       'volunteerHours': Random().nextInt(50) + 10,
       'recentActivities': [
-        {'title': '김철수 어르신 도움', 'date': '2023-08-10', 'duration': 2},
-        {'title': '이영희 어르신 도움', 'date': '2023-08-08', 'duration': 1.5},
+        {'title': '김철수 어르신 도움', 'date': '2023-08-10', 'duration': 28},
+        {'title': '이영희 어르신 도움', 'date': '2023-08-08', 'duration': 44},
+        {'title': '홍길동 어르신 도움', 'date': '2023-08-08', 'duration': 32},
       ],
       'helpRequests': [
-        {'title': '장보기 도움 필요', 'description': '근처 마트에서 장보기를 도와주실 분 찾습니다.'},
-        {'title': '컴퓨터 사용 도움', 'description': '이메일 보내는 방법을 알려주실 분 찾습니다.'},
+        {'title': '장보기 도움 필요', 'description': '키오스크 사용 도움이 필요합니다.'},
+        {'title': '장보기 도움 필요', 'description': '버스 표 발권 도움이 필요합니다.'},
+        {'title': '컴퓨터 사용 도움', 'description': '이메일 보내는 방법을 알고 싶어 하십니다.'},
       ],
     };
+  }
+
+  Future<Map<String, dynamic>> assignRequest(String requestId) async {
+    // 서버 호출 시뮬레이션
+    await Future.delayed(Duration(seconds: 1));
+
+    // 랜덤하게 성공 또는 실패 반환
+    if (DateTime.now().millisecondsSinceEpoch % 2 == 0) {
+      return {
+        'success': true,
+        'message': '연결 중입니다...'
+      };
+    } else {
+      return {
+        'success': false,
+        'message': '이미 배정된 요청입니다.'
+      };
+    }
   }
 }

@@ -18,6 +18,12 @@ dependencies:
   speech_to_text: ^6.1.1  # 버전을 6.1.1로 업데이트
   flutter_webrtc: ^0.11.6
   permission_handler: ^10.0.0
+  url_launcher: ^6.3.0
+  flutter_local_notifications: ^17.2.2
+  firebase_core: ^3.3.0
+  firebase_messaging: ^15.0.4
+  web_socket_channel: ^2.1.0
+  uuid: ^4.4.2
 
 dev_dependencies:
   flutter_test:

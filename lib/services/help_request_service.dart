@@ -13,7 +13,7 @@ class HelpRequestService {
     // 목업 데이터를 반환
     return [
       {
-        'roomId': '1a2b3c4d',
+        'roomId': 'FIXED_ROOM_CODE',
         'title': '장보기 도움 필요',
         'description': '키오스크 사용 도움이 필요합니다.',
       },
@@ -41,7 +41,7 @@ class HelpRequestService {
   }
 
   createHelpRequest(String processedText) {
-    return '1a2b3c4d';
+    return 'FIXED_ROOM_CODE';
   }
 }
 

@@ -32,6 +32,5 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/images/login_selection_senior.png
-    - assets/images/login_selection_responder.png
+    - assets/images/
   uses-material-design: true

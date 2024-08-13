@@ -23,14 +23,14 @@ class UserSelectionPage extends StatelessWidget {
               _buildSelectionCard(
                 context,
                 '도움이 필요해요\n(어르신 로그인)',
-                'images/login_selection_senior.png',
+                'assets/images/login_selection_senior.png',
                 '/senior_main',
               ),
               SizedBox(height: 20),
               _buildSelectionCard(
                 context,
                 '도움을 줄 수 있어요\n(도우미 로그인)',
-                'images/login_selection_responder.png',
+                'assets/images/login_selection_responder.png',
                 '/helper_login',
               ),
             ],

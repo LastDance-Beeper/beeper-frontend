@@ -27,7 +27,7 @@ class _StudentDashboardPageState extends State<StudentDashboardPage> {
   // List<Map<String, dynamic>> _helpRequests = [];
   List<Map<String, dynamic>> _helpRequests = [
     {
-      'roomId': '1a2b3c4d',
+      'roomId': 'FIXED_ROOM_CODE',
       'title': '장보기 도움 필요',
       'description': '키오스크 사용 도움이 필요합니다.',
     },

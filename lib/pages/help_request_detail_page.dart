@@ -93,7 +93,7 @@ class _HelpRequestDetailPageState extends State<HelpRequestDetailPage> {
           context,
           MaterialPageRoute(
             builder: (context) => VideoCallPage(
-              roomId: widget.requestId, requestTitle: '버스 무인발권기 사용', requestDescription: '인천공항에 가야하나, 밤이라 유인 발권 창구가 운영하지 않고 있어 어려움을 겪으시고 있습니다.', // roomId로 requestId를 사용
+              requestTitle: '버스 무인발권기 사용', requestDescription: '인천공항에 가야하나, 밤이라 유인 발권 창구가 운영하지 않고 있어 어려움을 겪으시고 있습니다.', // roomId로 requestId를 사용
             ),
           ),
         );
